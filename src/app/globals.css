@@ -41,6 +41,7 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  --shadow: 0 0 7px rgba(0, 0, 0, 0.2);
 }
 
 :root {
@@ -119,4 +120,8 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+.settings_text {
+  @apply cursor-pointer text-sm hover:bg-slate-100 transition-all ease-in-out duration-300 py-1 px-2 rounded-sm;
 }

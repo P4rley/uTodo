@@ -10,10 +10,6 @@ const Home = () => {
       <h1>Home</h1>
 
       <p>{auth?.currentUser?.displayName}</p>
-
-      <p className="cursor-pointer" onClick={() => auth?.signOut()}>
-        Sign Out
-      </p>
     </div>
   );
 };
