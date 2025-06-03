@@ -70,7 +70,7 @@ const Register = () => {
           });
         }
 
-        router.push("/home");
+        router.push("/dashboard");
       }
 
       console.log("User created with name:", user.displayName);

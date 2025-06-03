@@ -56,7 +56,7 @@ const Login = () => {
           });
         }
 
-        router.push("/home");
+        router.push("/dashboard");
       }
     } catch (error) {
       console.error("Email and Password login error:", error);

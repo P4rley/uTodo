@@ -24,7 +24,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={nunitoSans.className}>
       <body>
-        <AuthProvider>{children}</AuthProvider>
+        <div>
+          <AuthProvider>{children}</AuthProvider>
+        </div>
       </body>
     </html>
   );
