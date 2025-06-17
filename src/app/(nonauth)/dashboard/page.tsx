@@ -5,9 +5,37 @@ import { useAuth } from "../../../../context/auth";
 import IconRenderer from "../../../components/IconRenderer";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import DashboardCard from "./components/DashboardCard";
+
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import CustomFormField, { FormFieldType } from "@/components/CustomFormField";
+import { FormProvider, useForm } from "react-hook-form";
+import { z } from "zod";
+import { AddActivitesFormValidation } from "@/lib/validation";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { SelectItem } from "@/components/ui/select";
 
 const Dashboard = () => {
   const auth = useAuth();
+
+  const form = useForm<z.infer<typeof AddActivitesFormValidation>>({
+    resolver: zodResolver(AddActivitesFormValidation),
+    defaultValues: {
+      title: "",
+      category: "",
+    },
+  });
 
   const [currentPartOfDay, setCurrentPartOfDay] = useState("");
   const [minutes, setMinutes] = useState(0);
@@ -52,9 +80,17 @@ const Dashboard = () => {
 
           setTimeout(() => {
             audioRef.current?.pause();
-          }, 10000);
+          }, 5000);
+
+          toast("Take a break", {
+            classNames: {
+              title: "!text-[#222]",
+              description: "!text-slate-400 font-base",
+            },
+            description: "It's time to take a break and relax",
+          });
         }
-      }, 10);
+      }, 1000);
     }
 
     return () => clearInterval(interval);
@@ -87,20 +123,114 @@ const Dashboard = () => {
     setDuration({ focus: "", break: "" });
   };
 
+  const onSubmit = async (
+    values: z.infer<typeof AddActivitesFormValidation>
+  ) => {
+    console.log(values);
+  };
+
   return (
     <div className="grid grid-cols-[1fr] lg:grid-cols-[1fr_350px] gap-2">
       <div className="overflow-auto">
-        <div className="border border-gray-200 bg-background p-4 rounded-md w-full h-[90px]">
-          {auth?.currentUser?.displayName ? (
-            <p className="text-2xl">
-              {currentPartOfDay ? currentPartOfDay : "Hi"},{" "}
-              {auth?.currentUser?.displayName?.split(" ")[1]}!
-            </p>
-          ) : (
-            ""
-          )}
+        {currentPartOfDay && (
+          <div className="border border-gray-200 bg-background p-4 rounded-md w-full h-[90px]">
+            {auth?.currentUser?.displayName ? (
+              <p className="text-2xl">
+                {currentPartOfDay},{" "}
+                {auth?.currentUser?.displayName?.split(" ")[1]}!
+              </p>
+            ) : (
+              ""
+            )}
 
-          <p className="text-sm text-gray-400">What do you plan to do today?</p>
+            <p className="text-sm text-gray-400">
+              What do you plan to do today?
+            </p>
+          </div>
+        )}
+
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="header">Today Activities</h2>
+            <span className="text-sm font-light">
+              Manage your habits, reminders, events, and activites.
+            </span>
+          </div>
+
+          <Dialog
+            onOpenChange={(open) => {
+              if (!open) form.reset();
+            }}
+          >
+            <DialogTrigger asChild>
+              <Button className="cursor-pointer">
+                <IconRenderer iconName="FaPlus" iconPack="fa" />
+                <p>New Activity</p>
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <FormProvider {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)}>
+                  <DialogHeader>
+                    <DialogTitle>Add Activity</DialogTitle>
+                    <DialogDescription>
+                      Make new habits, reminders, events, or activites, Click
+                      save when you&apos;re done.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div>
+                    <CustomFormField
+                      control={form.control}
+                      name="title"
+                      label="Title"
+                      fieldType={FormFieldType.INPUT}
+                      placeholder="Title"
+                    />
+
+                    <CustomFormField
+                      control={form.control}
+                      name="category"
+                      label="Category"
+                      fieldType={FormFieldType.SELECT}
+                      placeholder="Select Category"
+                    >
+                      {["Habits", "Reminders", "Events", "Activities"].map(
+                        (category, i) => (
+                          <SelectItem key={i} value={category}>
+                            <div className="flex cursor-pointer items-center gap-2">
+                              {/* <Image
+                              src={doctor.image}
+                              width={32}
+                              height={32}
+                              alt="doctor"
+                              className="rounded-full border border-dark-500"
+                            /> */}
+                              <p>{category}</p>
+                            </div>
+                          </SelectItem>
+                        )
+                      )}
+                    </CustomFormField>
+                  </div>
+
+                  <DialogFooter>
+                    <DialogClose asChild>
+                      <Button variant="outline">Cancel</Button>
+                    </DialogClose>
+                    <Button type="submit">Save</Button>
+                  </DialogFooter>
+                </form>
+              </FormProvider>
+            </DialogContent>
+          </Dialog>
+        </div>
+
+        <div>
+          <h2 className="sub-header">Your Habits</h2>
+
+          {[1, 2, 3].map((el, i) => (
+            <DashboardCard key={i} />
+          ))}
         </div>
       </div>
 

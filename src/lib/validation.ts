@@ -36,3 +36,8 @@ export const UserLoginFormValidation = z.object({
       "Password must contain at least one special character"
     ),
 });
+
+export const AddActivitesFormValidation = z.object({
+  title: z.string().nonempty("Title is required"),
+  category: z.string().min(2, "Select category"),
+});

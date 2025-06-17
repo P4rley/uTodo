@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Nunito_Sans } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "../../context/auth";
+import { Toaster } from "@/components/ui/sonner";
 
 const nunitoSans = Nunito_Sans({
   variable: "--font-nunito-sans",
@@ -26,6 +27,8 @@ export default function RootLayout({
       <body>
         <div>
           <AuthProvider>{children}</AuthProvider>
+
+          <Toaster />
         </div>
       </body>
     </html>
